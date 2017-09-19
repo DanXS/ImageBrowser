@@ -11,9 +11,11 @@ import XCTest
 
 class ImageBrowserTests: XCTestCase {
     
+    var flickrAPI : FlickrAPI?
+    
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        self.flickrAPI = FlickrAPI()
     }
     
     override func tearDown() {
