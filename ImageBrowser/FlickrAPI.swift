@@ -10,4 +10,15 @@ import Foundation
 
 class FlickrAPI {
     
+    func getPublicFeed(completion : @escaping (_ : Data?, _ : URLResponse?, _ : Error?) -> ()) {
+        guard let url = URL(string:"https://api.flickr.com/services/feeds/photos_public.gne?format=json") else {
+            completion(nil, nil, nil)
+            return
+        }
+        let task = URLSession.shared.dataTask(with : url) { (data, response, error) in
+            completion(data, response, error)
+        }
+        task.resume()
+    }
+    
 }

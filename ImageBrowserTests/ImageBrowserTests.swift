@@ -19,19 +19,22 @@ class ImageBrowserTests: XCTestCase {
     }
     
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testFlickrPublicFeed() {
+        let expectation = self.expectation(description: "Get public Flickr feed")
+        self.flickrAPI?.getPublicFeed(completion: { (data, response, error) in
+            XCTAssert(error == nil, error!.localizedDescription)
+            XCTAssert(response != nil, "Nil response object from Flickr feed")
+            if let httpResponse = response as? HTTPURLResponse {
+                XCTAssert(httpResponse.statusCode == 200, "Response status code should be 200 - i.e success")
+            }
+            XCTAssert(data != nil, "No result from public Flickr feed")
+            expectation.fulfill()
+        })
+        self.waitForExpectations(timeout: 10) { (error) in
+            XCTAssert(error == nil, error!.localizedDescription)
         }
     }
     
