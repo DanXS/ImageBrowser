@@ -23,7 +23,7 @@ class ImageBrowserTests: XCTestCase {
     }
     
     func testFlickrPublicFeed() {
-        let expectation = self.expectation(description: "Get public Flickr feed")
+        weak var expectation = self.expectation(description: "Get public Flickr feed")
         self.flickrAPI?.getPublicFeed(completion: { (json, response, error) in
             XCTAssertNil(error, error!.localizedDescription)
             XCTAssertNotNil(response, "Nil response object from Flickr feed")
@@ -61,10 +61,11 @@ class ImageBrowserTests: XCTestCase {
                 }
                 XCTAssertNotNil(item.media!.m, "Flickr Media Model has no m field")
             }
-            expectation.fulfill()
+            expectation?.fulfill()
+            expectation = nil
         })
         self.waitForExpectations(timeout: 10) { (error) in
-            XCTAssert(error == nil, error!.localizedDescription)
+            XCTAssertNil(error, error!.localizedDescription)
         }
     }
     
@@ -76,7 +77,7 @@ class ImageBrowserTests: XCTestCase {
     }
     
     func testImageViewModel() {
-        let expectation = self.expectation(description: "Get public Flickr feed and map items to imageViewModel")
+        weak var expectation = self.expectation(description: "Get public Flickr feed and map items to imageViewModel")
         self.flickrAPI?.getPublicFeed(completion: { (json, response, error) in
             XCTAssertNil(error, error!.localizedDescription)
             XCTAssertNotNil(response, "Nil response object from Flickr feed")
@@ -101,10 +102,26 @@ class ImageBrowserTests: XCTestCase {
                 XCTAssertNotNil(item.title, "Image View Model title is not set")
                 XCTAssertNotNil(item.imageURL, "Image View Model image URL is not set")
             }
-            expectation.fulfill()
+            expectation?.fulfill()
+            expectation = nil
         })
         self.waitForExpectations(timeout: 10) { (error) in
-            XCTAssert(error == nil, error!.localizedDescription)
+            XCTAssertNil(error, error!.localizedDescription)
+        }
+    }
+    
+    func testLoadImage() {
+        weak var expectation = self.expectation(description: "Load a sample image from Flickr")
+        guard let url = URL(string: "https://farm5.staticflickr.com/4369/36519305614_2641ca0c69_m.jpg") else {
+            XCTFail("Invalid URL")
+            return
+        }
+        Util.loadImage(url: url) { (image, response, error) in
+            expectation?.fulfill()
+            expectation = nil
+        }
+        self.waitForExpectations(timeout: 10) { (error) in
+            XCTAssertNil(error, error!.localizedDescription)
         }
     }
     

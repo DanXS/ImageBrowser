@@ -6,7 +6,7 @@
 //  Copyright © 2017 Dan Shepherd. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class Util {
     static func toURL(string : String?) -> URL? {
@@ -23,5 +23,18 @@ class Util {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
         return dateFormatter.date(from: string!)
+    }
+    
+    static func loadImage(url : URL, completion: @escaping (_ : UIImage?, _ : URLResponse?, _ : Error?) -> ()) {
+        let task = URLSession.shared.dataTask(with : url) { (data, response, error) in
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 && data != nil && error == nil {
+                    let image = UIImage(data: data!)
+                    completion(image, response, error)
+                }
+            }
+            completion(nil, response, error)
+        }
+        task.resume()
     }
 }
