@@ -10,7 +10,7 @@ import Foundation
 
 class FlickrAPI {
     
-    func getPublicFeed(completion : @escaping (_ : Any?, _ : URLResponse?, _ : Error?) -> ()) {
+    func getPublicFeed(completion : @escaping (_ : [String : Any?]?, _ : URLResponse?, _ : Error?) -> ()) {
         guard let url = URL(string:"https://api.flickr.com/services/feeds/photos_public.gne?format=json&nojsoncallback=1") else {
             completion(nil, nil, nil)
             return
@@ -19,7 +19,7 @@ class FlickrAPI {
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 && data != nil && error == nil {
                     do {
-                        let json = try JSONSerialization.jsonObject(with: data!, options: [])
+                        let json = try JSONSerialization.jsonObject(with: data!, options: []) as? [String : Any?]
                         completion(json, response, error)
                     }
                     catch let error {
