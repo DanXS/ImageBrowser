@@ -75,4 +75,37 @@ class ImageBrowserTests: XCTestCase {
         XCTAssertNotNil(Util.toDate(string : "2017-09-21T08:45:37Z"), "This should be a valid Date/Time object")
     }
     
+    func testImageViewModel() {
+        let expectation = self.expectation(description: "Get public Flickr feed and map items to imageViewModel")
+        self.flickrAPI?.getPublicFeed(completion: { (json, response, error) in
+            XCTAssertNil(error, error!.localizedDescription)
+            XCTAssertNotNil(response, "Nil response object from Flickr feed")
+            if let httpResponse = response as? HTTPURLResponse {
+                XCTAssert(httpResponse.statusCode == 200, "Response status code should be 200 - i.e success")
+            }
+            XCTAssertNotNil(json, "No result from public Flickr feed")
+            // Assuming we now have the correct json data, try to populate the model
+            guard json != nil else {
+                return
+            }
+            let model = FlickrModel(json : json!)
+            XCTAssert(model.items.count > 0, "Flickr feed has no items")
+            // Assuming we have items in the flickr feed, check each item for valid fields
+            guard model.items.count > 0 else {
+                return
+            }
+            let imageViewModels = model.items.map({ (item : FlickrItemModel) -> ImageViewModel in
+                return ImageViewModel().fromFlickrItemModel(item: item)
+            })
+            for item in imageViewModels {
+                XCTAssertNotNil(item.title, "Image View Model title is not set")
+                XCTAssertNotNil(item.imageURL, "Image View Model image URL is not set")
+            }
+            expectation.fulfill()
+        })
+        self.waitForExpectations(timeout: 10) { (error) in
+            XCTAssert(error == nil, error!.localizedDescription)
+        }
+    }
+    
 }
