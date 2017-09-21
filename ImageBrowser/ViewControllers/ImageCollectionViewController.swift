@@ -8,25 +8,43 @@
 
 import UIKit
 
-private let reuseIdentifier = "Cell"
+private let reuseIdentifier = "ImageCell"
 
-class ImageCollectionViewController: UICollectionViewController {
+class ImageCollectionViewController: UICollectionViewController, ImageViewProviderDelegate {
+
+    var imageViewProvider : ImageViewProvider?
+    var imageList: [ImageViewModel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-
-        // Do any additional setup after loading the view.
+        self.loadImageList()
+    }
+    
+    func loadImageList() {
+        self.imageViewProvider = FlickrImageViewProvider(delegate : self)
+        DispatchQueue.global(qos: .background).async {
+            self.imageViewProvider?.loadImageList()
+        }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    // MARK: - ImageViewProviderDelegate methods
+    func imageListLoadComplete(imageList: [ImageViewModel]) {
+        DispatchQueue.main.async {
+            self.imageList = imageList
+            self.collectionView?.reloadData()
+        }
+    }
+    
+    func imageListLoadError(error: Error?) {
+        // Todo: handle error properly, for now just print the error
+        DispatchQueue.main.async {
+            print(error.debugDescription)
+        }
     }
 
     /*
@@ -48,14 +66,20 @@ class ImageCollectionViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 0
+        return self.imageList.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-    
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ImageCollectionViewCell
+        
         // Configure the cell
-    
+        cell.titleLabel.text = imageList[indexPath.item].title ?? ""
+        if imageList[indexPath.item].image != nil {
+            cell.imageView.image = imageList[indexPath.item].image
+        }
+        else {
+            // todo: load image
+        }
         return cell
     }
 
