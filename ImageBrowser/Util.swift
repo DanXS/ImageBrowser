@@ -31,6 +31,7 @@ class Util {
                 if httpResponse.statusCode == 200 && data != nil && error == nil {
                     let image = UIImage(data: data!)
                     completion(image, response, error)
+                    return
                 }
             }
             completion(nil, response, error)
