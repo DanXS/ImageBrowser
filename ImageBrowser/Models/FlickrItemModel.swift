@@ -9,6 +9,7 @@
 import Foundation
 
 class FlickrItemModel {
+    
     var title : String?
     var description : String?
     var tags : String?
@@ -17,7 +18,7 @@ class FlickrItemModel {
     var dateTaken : Date?
     var published : Date?
     var link : URL?
-    
+    var media : FlickrMediaModel?
     
     init(json : [String : Any?]) {
         self.title = json["title"] as? String
@@ -28,5 +29,8 @@ class FlickrItemModel {
         self.dateTaken = Util.toDate(string: json["date_taken"] as? String)
         self.published = Util.toDate(string: json["published"] as? String)
         self.link = Util.toURL(string: json["link"] as? String)
+        if let mediaJson = json["media"] as? [String : Any?] {
+            self.media = FlickrMediaModel(json : mediaJson)
+        }
     }
 }

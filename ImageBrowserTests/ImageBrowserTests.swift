@@ -46,14 +46,20 @@ class ImageBrowserTests: XCTestCase {
                 return
             }
             for item in model.items {
-                XCTAssertNotNil(item.title, "Fickr Item Model has no title field")
-                XCTAssertNotNil(item.description, "Fickr Item Model has no description field")
-                XCTAssertNotNil(item.tags, "Fickr Item Model has no tags field")
-                XCTAssertNotNil(item.author, "Fickr Item Model has no author field")
-                XCTAssertNotNil(item.authorId, "Fickr Item Model has no author id field")
-                XCTAssertNotNil(item.dateTaken, "Fickr Item Model has no date taken field")
-                XCTAssertNotNil(item.published, "Fickr Item Model has no published field")
-                XCTAssertNotNil(item.link, "Fickr Item Model has no link field")
+                XCTAssertNotNil(item.title, "Flickr Item Model has no title field")
+                XCTAssertNotNil(item.description, "Flickr Item Model has no description field")
+                XCTAssertNotNil(item.tags, "Flickr Item Model has no tags field")
+                XCTAssertNotNil(item.author, "Flickr Item Model has no author field")
+                XCTAssertNotNil(item.authorId, "Flickr Item Model has no author id field")
+                XCTAssertNotNil(item.dateTaken, "Flickr Item Model has no date taken field")
+                XCTAssertNotNil(item.published, "Flickr Item Model has no published field")
+                XCTAssertNotNil(item.link, "Flickr Item Model has no link field")
+                XCTAssertNotNil(item.media, "Flickr Item Model has no media field")
+                // Assuming the item loaded, lets check the media field
+                guard item.media != nil else {
+                    return
+                }
+                XCTAssertNotNil(item.media!.m, "Flickr Media Model has no m field")
             }
             expectation.fulfill()
         })
@@ -67,7 +73,6 @@ class ImageBrowserTests: XCTestCase {
         XCTAssertNotNil(Util.toURL(string : "http://www.google.com"), "URL should be nil if string paramateter is nil")
         XCTAssertNil(Util.toDate(string : nil), "Date should be nil if string parameter is nil")
         XCTAssertNotNil(Util.toDate(string : "2017-09-21T08:45:37Z"), "This should be a valid Date/Time object")
-        
     }
     
 }
