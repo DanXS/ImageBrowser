@@ -36,10 +36,25 @@ class ImageBrowserTests: XCTestCase {
                 return
             }
             let model = FlickrModel(json : json!)
-            XCTAssertNotNil(model.title, "Flickr Model has no title")
-            XCTAssertNotNil(model.description, "Flickr Model has no description")
-            //XCTAssertNotNil(model.link, "Flickr Model has no link")
-            //XCTAssertNotNil(model.modified, "Flickr Model has no modified date time")
+            XCTAssertNotNil(model.title, "Flickr Model has no title field")
+            XCTAssertNotNil(model.description, "Flickr Model has no description field")
+            XCTAssertNotNil(model.link, "Flickr Model has no link field")
+            XCTAssertNotNil(model.modified, "Flickr Model has no modified date time field")
+            XCTAssert(model.items.count > 0, "Flickr feed has no items")
+            // Assuming we have items in the flickr feed, check each item for valid fields
+            guard model.items.count > 0 else {
+                return
+            }
+            for item in model.items {
+                XCTAssertNotNil(item.title, "Fickr Item Model has no title field")
+                XCTAssertNotNil(item.description, "Fickr Item Model has no description field")
+                XCTAssertNotNil(item.tags, "Fickr Item Model has no tags field")
+                XCTAssertNotNil(item.author, "Fickr Item Model has no author field")
+                XCTAssertNotNil(item.authorId, "Fickr Item Model has no author id field")
+                XCTAssertNotNil(item.dateTaken, "Fickr Item Model has no date taken field")
+                XCTAssertNotNil(item.published, "Fickr Item Model has no published field")
+                XCTAssertNotNil(item.link, "Fickr Item Model has no link field")
+            }
             expectation.fulfill()
         })
         self.waitForExpectations(timeout: 10) { (error) in
