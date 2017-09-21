@@ -33,6 +33,7 @@ class ImageCollectionViewController: UICollectionViewController, ImageViewProvid
     }
     
     // MARK: - ImageViewProviderDelegate methods
+    
     func imageListLoadComplete(imageList: [ImageViewModel]) {
         DispatchQueue.main.async {
             self.imageList = imageList
@@ -55,7 +56,6 @@ class ImageCollectionViewController: UICollectionViewController, ImageViewProvid
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
         return self.imageList.count
     }
 
