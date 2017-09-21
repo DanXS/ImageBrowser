@@ -24,13 +24,14 @@ class ImageBrowserTests: XCTestCase {
     
     func testFlickrPublicFeed() {
         let expectation = self.expectation(description: "Get public Flickr feed")
-        self.flickrAPI?.getPublicFeed(completion: { (data, response, error) in
+        self.flickrAPI?.getPublicFeed(completion: { (json, response, error) in
             XCTAssert(error == nil, error!.localizedDescription)
             XCTAssert(response != nil, "Nil response object from Flickr feed")
             if let httpResponse = response as? HTTPURLResponse {
                 XCTAssert(httpResponse.statusCode == 200, "Response status code should be 200 - i.e success")
             }
-            XCTAssert(data != nil, "No result from public Flickr feed")
+            XCTAssert(json != nil, "No result from public Flickr feed")
+            print("\(json!)")
             expectation.fulfill()
         })
         self.waitForExpectations(timeout: 10) { (error) in
